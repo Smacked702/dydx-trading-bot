@@ -31,7 +31,7 @@ if __name__ == "__main__":
       print("Fetching market prices, please allow 3 mins...")
       df_market_prices = construct_market_prices(client)
     except Exception as e:  
-      print("Error contructing market prices: ", e)
+      print("Error constructing market prices: ", e)
       exit(1)
     
     # Store Cointegrated Pairs
@@ -42,6 +42,6 @@ if __name__ == "__main__":
         print("Error saving cointegration pairs")
         exit(1)
     except Exception as e:  
-      print("Error closing all positions: ", e)
+      print("Error saving cointegrated pairs: ", e)
       exit(1)
     

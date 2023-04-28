@@ -9,7 +9,6 @@ from pprint import pprint
 # Get relevant time periods for ISO from and to 
 ISO_TIMES = get_ISO_times()
 
-pprint(ISO_TIMES)
 
 # Get Candles Historical
 def get_candles_historical(client, market):
@@ -34,7 +33,7 @@ def get_candles_historical(client, market):
       resolution=RESOLUTION,
       from_iso=from_iso,
       to_iso=to_iso,
-      limit=1000  # Increase limit to ensure all candles are retrieved
+      limit=100  # Increase limit to ensure all candles are retrieved
     )
 
     # Structure data
@@ -47,6 +46,7 @@ def get_candles_historical(client, market):
 
 # Construct market prices
 def construct_market_prices(client):
+  
   
   # Declare variables
   tradeable_markets = []
@@ -80,5 +80,4 @@ def construct_market_prices(client):
     df.drop(columns=nans, inplace=True) 
 
   # Return result
-  print(df)
   return df
