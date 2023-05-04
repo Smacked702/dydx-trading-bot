@@ -24,7 +24,7 @@ def calculate_half_life(spread):
 def calculate_zscore(spread):
   spread_series = pd.Series(spread)
   mean = spread_series.rolling(center=False, window=WINDOW).mean()
-  std = spread_series.rolling(center=False, window=WINDOW), std()
+  std = spread_series.rolling(center=False, window=WINDOW). std()
   x = spread_series.rolling(center=False,window=1).mean()
   zscore = (x - mean) / std
   return zscore
