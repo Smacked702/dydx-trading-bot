@@ -191,8 +191,8 @@ class BotAgent:
           print("Unexpected Error")
           print(order_status_close_order)
 
-          # !!! CONSIDER SENDING MESSAGE HERE !!!
-          send_message("failed to execute. Code red. Error code: 100")
+          # Send Message
+          send_message("Failed to execute. Code red. Error code: 100")
 
           # ABORT
           exit(1)
@@ -203,8 +203,8 @@ class BotAgent:
         print("Unexpected Error")
         print(order_status_close_order)
 
-        # !!! CONSIDER SENDING MESSAGE HERE !!!
-        send_message("failed to execute. Code red. Error code: 101")
+        # Send Message
+        send_message("Failed to execute. Code red. Error code: 101")
 
         # ABORT
         exit(1)

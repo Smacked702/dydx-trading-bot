@@ -21,21 +21,21 @@ def open_positions(client):
   # Load cointegrated pairs
   df = pd.read_csv("cointegrated_pairs.csv")
 
-  # Get market from referencing of min order size, tick size etc
+  # Get markets from referencing of min order size, tick size etc
   markets = client.public.get_markets().data
 
   # Initialize container for BotAgent results
   bot_agents = []
-  
+
   # Opening JSON file
   try:
     open_positions_file = open("bot_agents.json")
     open_positions_dict = json.load(open_positions_file)
     for p in open_positions_dict:
-      bot_agents = []  
+      bot_agents.append(p)
   except:
     bot_agents = []
-
+  
   # Find ZScore triggers
   for index, row in df.iterrows():
 
@@ -44,7 +44,7 @@ def open_positions(client):
     quote_market = row["quote_market"]
     hedge_ratio = row["hedge_ratio"]
     half_life = row["half_life"]
-    
+
     # Get prices
     series_1 = get_candles_recent(client, base_market)
     series_2 = get_candles_recent(client, quote_market)
@@ -53,7 +53,7 @@ def open_positions(client):
     if len(series_1) > 0 and len(series_1) == len(series_2):
       spread = series_1 - (hedge_ratio * series_2)
       z_score = calculate_zscore(spread).values.tolist()[-1]
-      
+
       # Establish if potential trade
       if abs(z_score) >= ZSCORE_THRESH:
 
@@ -77,7 +77,7 @@ def open_positions(client):
           base_tick_size = markets["markets"][base_market]["tickSize"]
           quote_tick_size = markets["markets"][quote_market]["tickSize"]
 
-          # Format prices 
+          # Format prices
           accept_base_price = format_number(accept_base_price, base_tick_size)
           accept_quote_price = format_number(accept_quote_price, quote_tick_size)
           accept_failsafe_base_price = format_number(failsafe_base_price, base_tick_size)
@@ -88,7 +88,7 @@ def open_positions(client):
           base_step_size = markets["markets"][base_market]["stepSize"]
           quote_step_size = markets["markets"][quote_market]["stepSize"]
 
-          # Format size
+          # Format sizes
           base_size = format_number(base_quantity, base_step_size)
           quote_size = format_number(quote_quantity, quote_step_size)
 
@@ -130,6 +130,10 @@ def open_positions(client):
             # Open Trades
             bot_open_dict = bot_agent.open_trades()
 
+            # Guard: Handle failure
+            if bot_open_dict == "failed":
+              continue
+
             # Handle success in opening trades
             if bot_open_dict["pair_status"] == "LIVE":
 
@@ -137,14 +141,12 @@ def open_positions(client):
               bot_agents.append(bot_open_dict)
               del(bot_open_dict)
 
-              # Confirm live status in print 
+              # Confirm live status in print
               print("Trade status: Live")
               print("---")
 
   # Save agents
-  print(f"Success: Manage open trade checked")
+  print(f"Success: Manage open trades checked")
   if len(bot_agents) > 0:
     with open("bot_agents.json", "w") as f:
-      json.dump(bot_agents, f)
-            
-            
+      json.dump(bot_agents, f)                    

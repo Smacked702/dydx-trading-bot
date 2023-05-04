@@ -1,14 +1,14 @@
 from decouple import config
 from dydx3 import Client
-from web3 import Web3 
+from web3 import Web3
 from constants import (
-    HOST,
-    ETHEREUM_ADDRESS,
-    DYDX_API_KEY,
-    DYDX_API_SECRET,
-    DYDX_API_PASSPHRASE,
-    STARK_PRIVATE_KEY,
-    HTTP_PROVIDER,
+  HOST,
+  ETHEREUM_ADDRESS,
+  DYDX_API_KEY,
+  DYDX_API_SECRET,
+  DYDX_API_PASSPHRASE,
+  STARK_PRIVATE_KEY,
+  HTTP_PROVIDER,
 )
 
 # Connect to DYDX

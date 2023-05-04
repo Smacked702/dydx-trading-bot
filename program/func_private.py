@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from func_utils import format_number
 import time
+import json
 
 from pprint import pprint
 
@@ -8,7 +9,7 @@ from pprint import pprint
 # Get existing open positions
 def is_open_positions(client, market):
 
-  # Protect Api
+  # Protect API
   time.sleep(0.2)
 
   # Get positions
@@ -30,7 +31,7 @@ def check_order_status(client, order_id):
   if order.data:
     if "order" in order.data.keys():
       return order.data["order"]["status"]
-  return "FAILED" 
+  return "FAILED"
 
 
 # Place market order
@@ -39,9 +40,9 @@ def place_market_order(client, market, side, size, price, reduce_only):
   account_response = client.private.get_account()
   position_id = account_response.data["account"]["positionId"]
 
-  # Get expiration time 
+  # Get expiration time
   server_time = client.public.get_time()
-  expiration = datetime.fromisoformat(server_time.data["iso"].replace("Z","")) + timedelta(seconds=70)
+  expiration = datetime.fromisoformat(server_time.data["iso"].replace("Z", "")) + timedelta(seconds=70)
 
   # Place an order
   placed_order = client.private.create_order(
@@ -54,9 +55,11 @@ def place_market_order(client, market, side, size, price, reduce_only):
     price=price,
     limit_fee='0.015',
     expiration_epoch_seconds=expiration.timestamp(),
-    time_in_force="FOK",
+    time_in_force="FOK", 
     reduce_only=reduce_only
   )
+
+  # print(placed_order.data)
 
   # Return result
   return placed_order.data
@@ -66,7 +69,7 @@ def place_market_order(client, market, side, size, price, reduce_only):
 def abort_all_positions(client):
   
   # Cancel all orders
-  canceled_orders = client.private.cancel_all_orders()
+  client.private.cancel_all_orders()
 
   # Protect API
   time.sleep(0.5)
@@ -84,7 +87,7 @@ def abort_all_positions(client):
   # Handle open positions
   close_orders = []
   if len(all_positions) > 0:
-    
+
     # Loop through each position
     for position in all_positions:
 
@@ -118,5 +121,10 @@ def abort_all_positions(client):
       # Protect API
       time.sleep(0.2)
 
+    # Override json file with empty list
+    bot_agents = []
+    with open("bot_agents.json", "w") as f:
+      json.dump(bot_agents, f)
+
     # Return closed orders
-    return close_orders  
+    return close_orders

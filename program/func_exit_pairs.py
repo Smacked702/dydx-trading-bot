@@ -4,7 +4,7 @@ from func_public import get_candles_recent
 from func_cointegration import calculate_zscore
 from func_private import place_market_order
 import json
-import time 
+import time
 
 from pprint import pprint
 
@@ -67,7 +67,7 @@ def manage_trade_exits(client):
     order_side_m1 = order_m1.data["order"]["side"]
 
     # Protect API
-    time.sleep(0.5) 
+    time.sleep(0.5)
 
     # Get order info m2 per exchange
     order_m2 = client.private.get_order_by_id(position["order_id_m2"])
@@ -99,7 +99,7 @@ def manage_trade_exits(client):
 
     # Trigger close based on Z-Score
     if CLOSE_AT_ZSCORE_CROSS:
-      
+
       # Initialize z_scores
       hedge_ratio = position["hedge_ratio"]
       z_score_traded = position["z_score"]
@@ -123,7 +123,7 @@ def manage_trade_exits(client):
     ###
 
     # Close positions if triggered
-    if is_close:   
+    if is_close:
 
       # Determine side - m1
       side_m1 = "SELL"
@@ -184,7 +184,7 @@ def manage_trade_exits(client):
         print(">>> Closing <<<")
 
       except Exception as e:
-        print(f"Exit failed for {position_market_m1} eith {position_market_m2}")
+        print(f"Exit failed for {position_market_m1} with {position_market_m2}")
         save_output.append(position)
 
     # Keep record if items and save

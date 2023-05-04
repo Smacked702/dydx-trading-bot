@@ -1,14 +1,14 @@
-import pandas as pd 
-import numpy as np 
-from statsmodels.tsa.stattools import coint
+import pandas as pd
+import numpy as np
 import statsmodels.api as sm
+from statsmodels.tsa.stattools import coint
 from constants import MAX_HALF_LIFE, WINDOW
 
 # Calculate Half Life
 # https://www.pythonforfinance.net/2016/05/09/python-backtesting-mean-reversion-part-2/
 
 def calculate_half_life(spread):
-  df_spread = pd.DataFrame(spread,columns=["spread"])
+  df_spread = pd.DataFrame(spread, columns=["spread"])
   spread_lag = df_spread.spread.shift(1)
   spread_lag.iloc[0] = spread_lag.iloc[1]
   spread_ret = df_spread.spread - spread_lag
@@ -24,8 +24,8 @@ def calculate_half_life(spread):
 def calculate_zscore(spread):
   spread_series = pd.Series(spread)
   mean = spread_series.rolling(center=False, window=WINDOW).mean()
-  std = spread_series.rolling(center=False, window=WINDOW). std()
-  x = spread_series.rolling(center=False,window=1).mean()
+  std = spread_series.rolling(center=False, window=WINDOW).std()
+  x = spread_series.rolling(center=False, window=1).mean()
   zscore = (x - mean) / std
   return zscore
 
@@ -49,20 +49,20 @@ def calculate_cointegration(series_1, series_2):
 
 
 # Store Cointegration Results
-def store_cointegration_results(df_markets_prices):
-  
-  # Intialize 
-  markets = df_markets_prices.columns.to_list()
+def store_cointegration_results(df_market_prices):
+
+  # Initialize
+  markets = df_market_prices.columns.to_list()
   criteria_met_pairs = []
 
   # Find cointegrated pairs
   # Start with our base pair
   for index, base_market in enumerate(markets[:-1]):
-    series_1 = df_markets_prices[base_market].values.astype(float).tolist()
+    series_1 = df_market_prices[base_market].values.astype(float).tolist()
 
     # Get Quote Pair
     for quote_market in markets[index +1:]:
-      series_2 = df_markets_prices[quote_market].values.astype(float).tolist()
+      series_2 = df_market_prices[quote_market].values.astype(float).tolist()
 
       # Check cointegration
       coint_flag, hedge_ratio, half_life = calculate_cointegration(series_1, series_2)
@@ -84,4 +84,3 @@ def store_cointegration_results(df_markets_prices):
   # Return result
   print("Cointegrated pairs successfully saved")
   return "saved"
-
