@@ -8,13 +8,13 @@ MODE = "DEVELOPMENT"
 ABORT_ALL_POSITIONS = True
 
 # Find Cointegrated Pairs
-FIND_COINTEGRATED = False
+FIND_COINTEGRATED = True
 
 # Place Trades
 MANAGE_EXITS = True
 
 # Place Trades
-PLACE_TRADES = True 
+PLACE_TRADES = True
 
 # RESOLUTION 
 RESOLUTION = "1HOUR"
